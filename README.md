@@ -12,15 +12,19 @@ This is verified by comparing the results to numeric predictions, a polynomial a
 
 ## Math
 Continuity Equation
+
 $$ \frac{\partial u}{\partial x}+\frac{\partial v}{\partial y}=0 $$
 
 Conservation of Momentum
+
 $$ \rho \left[u \frac{\partial u}{\partial x}+v\frac{\partial u}{\partial y}\right]=-\frac{\partial p}{\partial x}+μ\left(\frac{\partial ^2 u}{\partial y^2}+\frac{\partial ^2 u}{\partial x^2}\right) $$
 
 Conservation of Mass
+
 $$\int_0^1u^* dy^*=1$$
 
 Fully Developed Flow
+
 $$ u=\frac{1}{2\mu} \frac{\partial P}{\partial x}\left(y^2-Hy\right) $$
 
 ### Boundary Layer Polynomial Approximation
