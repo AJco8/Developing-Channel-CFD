@@ -1,38 +1,101 @@
-# Developing-Channel-CFD
+# Developing Channel CFD
 
-## Abstract
-A MATLAB program simulating a steady, two-dimensional, incompressible flow with constant properties by applying the finite volume method. The program uses a Mash Convergence study to find the optimal size for the Tri-diagonal Matrix Algorithm to discretize a non-dimensional model. 
+## Overview
+
+This project implements a MATLAB finite volume solver for steady, 2-Dimensional, incompressible developing flow in a channel. The simulation models the growth of boundary layers from the channel walls, the evolution of the streamwise velocity profile, and the approach toward fully developed internal flow.
+
+The project demonstrates CFD fundamentals including finite volume discretization, pressure-driven viscous flow, boundary condition enforcement, mesh convergence, numerical verification, and comparison against analytical and approximate flow solutions.
+
+## Numerical Method
+
+The solver applies the finite volume method to a non-dimensional form of the steady incompressible governing equations. The domain is discretized into control volumes, and the resulting algebraic system is solved using the Tri-Diagonal Matrix Algorithm.
+
+The program assumes:
+
+* Steady flow
+* 2-Dimensional flow
+* Incompressible fluid
+* Constant fluid properties
+* No-slip boundary condition at the channel walls
+* Uniform inlet velocity
+* Developing boundary layers along the upper and lower walls
+
+A mesh convergence study was performed to compare velocity profiles, pressure gradient behavior, and solution stability across multiple grid resolutions. The selected grid was chosen based on the point where additional refinement produced minimal change in the computed results.
+
+## Governing Equations
+
+### Continuity Equation
+
+$$
+\frac{\partial u}{\partial x}+\frac{\partial v}{\partial y}=0
+$$
+
+### Streamwise Momentum Equation
+
+$$
+\rho \left[u \frac{\partial u}{\partial x}+v\frac{\partial u}{\partial y}\right]
+=
+-\frac{\partial p}{\partial x}
++
+\mu\left(\frac{\partial ^2 u}{\partial y^2}+\frac{\partial ^2 u}{\partial x^2}\right)
+$$
+
+### Non-Dimensional Conservation of Mass
+
+$$
+\int_0^1u^* dy^*=1
+$$
+
+### Fully Developed Channel Flow
+
+For fully developed laminar channel flow, the expected streamwise velocity profile is parabolic:
+
+$$
+u=\frac{1}{2\mu} \frac{\partial P}{\partial x}\left(y^2-Hy\right)
+$$
+
+This solution was used as a reference for evaluating whether the numerical result approached the expected fully developed profile downstream.
+
+## Boundary Layer Approximation
+
+A polynomial approximation was used to estimate the developing boundary layer profile near the channel entrance:
+
+$$
+u^* = 2\eta - \eta^2
+$$
+
+where
+
+$$
+\eta = \frac{y}{\delta}
+$$
+
+and
+
+$$
+\delta = \frac{3}{2} \left(1 - \frac{U_i}{U}\right)
+$$
+
+The numerical velocity profiles were compared against this approximation to assess whether the simulated boundary layer growth followed the expected physical trend.
+
+## Verification and Validation
+
+The streamwise velocity results were verified by comparing the numerical solution against three reference cases. First, the downstream velocity profile was compared to the mathematically predicted velocity profile for fully developed channel flow. This comparison was used to confirm that the simulated flow approached the expected parabolic profile as the boundary layers grew and the entrance effects diminished.
+
+The developing region of the flow was also compared to a boundary layer polynomial approximation. This comparison was used to evaluate whether the simulated streamwise velocity followed the expected boundary layer growth behavior near the channel walls. Agreement with the polynomial approximation helped confirm that the solver captured the transition from the uniform inlet profile toward the developing internal flow profile.
+
+A third comparison was made against the commencement flow solution in a circular pipe. Although the pipe solution uses a different geometry, it provides a useful analytical reference for viscous internal flow development. Comparing the channel flow results to this solution helped evaluate whether the numerical model produced physically reasonable streamwise velocity development as the flow evolved from its initial condition toward a fully developed state.
 
 ## Results
-![](./Figures/Developing_Flow.jpg)
-![](./Figures/Vectors.jpg)
 
-## Verification
-This is verified by comparing the results to numeric predictions, a polynomial approximation of the boundary layer, and the commencement flow in a circular pipe. 
+### Developing Flow Field
 
-## Math
-Continuity Equation
+The streamwise velocity field shows the development of boundary layers from both channel walls. As the flow progresses downstream, the boundary layers grow toward the channel centerline and the profile approaches fully developed internal flow.
 
-$$ \frac{\partial u}{\partial x}+\frac{\partial v}{\partial y}=0 $$
+![Developing flow result](./Figures/Developing_Flow.jpg)
 
-Conservation of Momentum
+### Velocity Vector Field
 
-$$ \rho \left[u \frac{\partial u}{\partial x}+v\frac{\partial u}{\partial y}\right]=-\frac{\partial p}{\partial x}+μ\left(\frac{\partial ^2 u}{\partial y^2}+\frac{\partial ^2 u}{\partial x^2}\right) $$
+The velocity vector field shows the relationship between streamwise flow and the smaller transverse velocity component generated by developing boundary layer growth.
 
-Conservation of Mass
-
-$$\int_0^1u^* dy^*=1$$
-
-Fully Developed Flow
-
-$$ u=\frac{1}{2\mu} \frac{\partial P}{\partial x}\left(y^2-Hy\right) $$
-
-### Boundary Layer Polynomial Approximation
-$$ u^* = 2\eta - \eta^2 $$
-
-$$ \eta = \frac{y}{\delta} $$
-
-$$ \delta = \frac{3}{2} \left(1 - \frac{U_i}{U}\right) $$
-
-### Commencement Flow in Circular Pipe
-$$ u(t,r) = -\frac{R^2}{4\mu} \frac{dp}{dz} \left[1 - \left(\frac{r}{R}\right)^2 - \sum_{n=1}^{\infty} \frac{8J_0\left(\frac{\alpha_n r}{R}\right)}{\alpha_n^3 J_1(\alpha_n)} e^{-\left(\frac{\alpha_n^2 \nu t}{R^2}\right)} \right] $$
+![Velocity vector field](./Figures/Vectors.jpg)
